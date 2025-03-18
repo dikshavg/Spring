@@ -1,0 +1,98 @@
+package com.nt.sbeans;
+
+import java.time.LocalTime;
+
+public class WishMessageGenerator
+{
+	private LocalTime time;
+
+	//setter method for setter Injection (alt+shift+s,r)
+
+	public void setTime(LocalTime time) {
+
+	System.out.println("Wish MessageGenerator.setTime()");
+	this.time =time;
+	}
+	
+	public String showWishMessage(String user) {
+
+	System.out.println("WishMessageGenerator.showWishMessage() ");
+
+	//get current hour of the day 
+	
+	int hour=time.getHour();
+
+	//generate the wish message
+	
+	if(hour<12) {
+	return "Good Monrning:"+user; 
+	}
+	else if(hour<16) {
+		return "Good Afternoon:"+user;		
+	}
+	
+	else if(hour<18) {
+		return "Good Evening:"+user;}
+
+	else
+		return "Good Night:"+user;
+
+	}
+
+}
+---------------------------------------------------------------------
+package com.nt.main;
+
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import com.nt.sbeans.WishMessageGenerator;
+
+public class DependencyInjectionTest {
+	public static void main(String[] args) {
+
+		// create IOC container
+
+		FileSystemXmlApplicationContext ctx=new FileSystemXmlApplicationContext("src/com/nt/cfgs/applicationContext.xml");
+
+		//get target Spring bean class
+
+		Object obj=ctx.getBean("wmg");
+
+		//Type casting
+
+		WishMessageGenerator generator=(WishMessageGenerator)obj;
+
+		// invoke the b.methods
+
+		String msg=generator.showWishMessage("raja");
+
+		System.out.println("result:"+msg);
+
+		//close the IOC container
+
+		ctx.close();
+
+		}
+
+	}
+--------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd"> 
+
+<bean id="ltime" class="java.time.LocalTime" factory-method="now" />
+
+<bean id="wmg" class="com.nt.sbeans.WishMessageGenerator">
+
+<property name="time" ref="ltime"/>
+
+</bean>
+
+</beans>
+--------------------------------------------------------------------------
+output:
+Wish MessageGenerator.setTime()
+WishMessageGenerator.showWishMessage() 
+result:Good Night:raja
