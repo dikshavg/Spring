@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd"> 
+
+
+
+<bean id="wf" class="com.nt.sbeans.WeekFinder">
+
+</bean>
+
+</beans>
+---------------------------------------------------------------------------------
+package com.nt.main;
+
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import com.nt.sbeans.WeekFinder;
+public class DependencyInjectionTest {
+	public static void main(String[] args) 
+	{
+	FileSystemXmlApplicationContext ctx=new FileSystemXmlApplicationContext("src/com/nt/cfgs/applicationContext.xml");
+	Object obj=ctx.getBean("wf");
+	WeekFinder wf=(WeekFinder)obj;
+	String msg=wf.checkingWeekDay();
+	System.out.println(msg);
+	ctx.close();
+
+	}
+
+}
+------------------------------------------------------------------------------------
+package com.nt.sbeans;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+public class WeekFinder {
+	public String checkingWeekDay() 
+	{
+		System.out.println("WeekFinder.checkingWeekDay()");
+		
+		DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
+
+	        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+	            return "It's a weekend!";
+	        } else {
+	            return "It's a weekday!";
+	        }
+	
+	}
+
+}
+---------------------------------------------------------------------------------------
+output:
+WeekFinder.checkingWeekDay()
+It's a weekday!
